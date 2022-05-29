@@ -15,6 +15,7 @@
 - Antes de iniciar el servidor, colocar en el archivo 'productos.txt' tres productos como en el ejemplo del desafío anterior.
 
 ### >> - Ejemplo:
+```python
 [
  {
    "title": "Escuadra",
@@ -35,4 +36,4 @@
    "id": 3
  }
 ]
-
+```
