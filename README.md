@@ -1,18 +1,6 @@
 # PROGRAMACION BACKEND
 # Comisión #31830 
 
-
-## Entrega de desafios
-Los desafios y las entregas de proyectos estarán ubicadas en su rama con su nombre :
-
-Ejemplo: desafio 1 estara en la rama desafio1.
-
-
-# PROGRAMACION BACKEND
-# Comisión #31830 
-
-
-
 ## Consigna:  
 
 - 1) Utilizando la misma API de productos del proyecto entregable de la clase anterior, construir un web server (no REST) que incorpore:
