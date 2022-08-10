@@ -29,9 +29,13 @@ class Contenedor {
         }
     }
     async getById(id) {
-        const objs = await this.getAll();
-        const obj = objs.find(x => x.id == id);
-        return obj;
+        try{
+            const objs = await this.getAll();
+            const obj = objs.find(x => x.id == id);
+            return obj;
+        }catch(error){
+            throw new Error (`No se encontro el obejto`);
+        }
     }
 
     async getAll(){
@@ -44,20 +48,25 @@ class Contenedor {
         }
     } 
     async deleteById(id){
-        let collection = []
-        await fs.readFile(`./${this.ruta}`,'utf-8')
-        .then( contenido => {
-            let col = JSON.parse(contenido)
-            for (const ob of col) {
-                if(ob.id != id) {
-                    collection.push(ob)
+        try {
+            
+            let collection = []
+            await fs.readFile(`./${this.ruta}`,'utf-8')
+            .then( contenido => {
+                let col = JSON.parse(contenido)
+                for (const ob of col) {
+                    if(ob.id != id) {
+                        collection.push(ob)
+                    }
                 }
-            }
-        })
-        .catch( err => console.log(err));
-        await fs.writeFile(`./${this.ruta}`, JSON.stringify(collection));
-        console.log('Objeto eliminado!');
-        console.log('******************');
+            })
+            .catch( err => console.log(err));
+            await fs.writeFile(`./${this.ruta}`, JSON.stringify(collection));
+            console.log('Objeto eliminado!');
+            console.log('******************');
+        } catch (error) {
+            throw new Error (`No se puede eliminar el obejto`);
+        }
     }
     
     async deleteAll(){
