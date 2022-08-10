@@ -1,4 +1,4 @@
-const Contenedor =require('./contenedor');
+const Contenedor = require('./contenedor');
 
 
 
