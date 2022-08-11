@@ -6,28 +6,26 @@ class Contenedor {
     }
 
     async save(obj){
-        const objs = await this.getAll();
 
-        let newId;
-
-        if (objs.length == 0){
-            newId = 1;
-        }else {
-            newId = objs[objs.length - 1].id + 1;
-        }
-
-        const newObj ={...obj , id: newId}
-        objs.push (newObj);
-
-        try {
-            
-            await fs.writeFile(this.ruta, JSON.stringify(objs,null,2));
-            return newId
-
-        } catch (error) {
+       try {
+            const objs = await this.getAll();
+            let newId;
+    
+           if (objs.length == 0){ 
+                 newId = 1;
+           }else { 
+             newId = objs[objs.length - 1].id + 1;
+           }
+           const newObj ={...obj , id: newId}
+           objs.push (newObj);
+           await fs.writeFile(this.ruta, JSON.stringify(objs,null,2));
+           return newId
+        } 
+        catch (error) {
             throw new Error (`Erros al guardar:${error}`);
         }
     }
+
     async getById(id) {
         try{
             const objs = await this.getAll();
@@ -49,7 +47,6 @@ class Contenedor {
     } 
     async deleteById(id){
         try {
-            
             let collection = []
             await fs.readFile(`./${this.ruta}`,'utf-8')
             .then( contenido => {
@@ -70,8 +67,12 @@ class Contenedor {
     }
     
     async deleteAll(){
-        await fs.writeFile(`./${this.ruta}`, '');
-        console.log('Todos los objetos fueron eliminados');
+        try{
+            await fs.writeFile(`./${this.ruta}`, '');
+            console.log('Todos los objetos fueron eliminados');
+        } catch (error) {
+            throw new Error (`Algo fallo: ${error}`);    
+        }
     }
 
 }
