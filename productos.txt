@@ -1,0 +1,21 @@
+[
+  {
+    "id": 1,
+    "title": "lapiz",
+    "price": 150,
+    "thumbnail": "url"
+  },
+  {
+    "id": 2,
+    "title": "goma",
+    "price": 400,
+    "thumbnail": "url"
+  },
+  {
+    "id": 3,
+    "title": "borrador",
+    "price": 1000,
+    "thumbnail": "url"
+  },
+
+]
