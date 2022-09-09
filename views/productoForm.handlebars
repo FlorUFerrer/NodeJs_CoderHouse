@@ -1,0 +1,177 @@
+<div class="container back-grey m-3 p-3">
+    <h1 class="blue m-2">Ingrese Producto</h1>
+    <div class="m-4">
+        <form id="productForm" method="post" action="/productos">
+            <div class="mb-3">
+                <label for="title" class="form-label"><i><strong>Nombre</strong></i></label>
+                <input type="text" class="form-control" id="nombre" name="title">
+            </div>
+            <div class="mb-3">
+                <label for="price" class="form-label"><i><strong>Precio</strong></i></label>
+                <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input type="number" min="0" step="0.01" class="form-control" name="price">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="thumbnail" class="form-label"><i><strong>Foto URL</strong></i></label>
+                <input type="text" class="form-control" id="nombre" name="thumbnail">
+            </div>
+            <button type="submit" class="btn btn-success"><strong>Enviar</strong></button>
+        </form>
+        <div class="mt-3">
+            <a href="/products">
+                <button class="btn btn-primary"><strong>Lista de Productos</strong></button>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div id="containerProductList"></div>
+
+<div class="container back-grey m-3 p-3">
+    <h1 class="blue m-2">Centro de Mensajes</h1>
+    <form id="chatForm">
+        <div class="container">
+            <div class="row">
+                <div class="col-6 mb-3 mt-4">
+                    <label for="email" class="form-label"><i><strong>Email</strong></i></label>
+                    <input type="email" class="form-control" id="email" name="email">
+                </div>
+                <div class="col-6 mt-4">
+                    <label for="msg" class="form-label"><i><strong>Mensaje</strong></i></label>
+                    <input type="text" class="form-control" id="msg" name="msg">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <button id="sendButton" class="btn btn-primary" type="submit">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <hr/>
+    <div id="listMessages"></div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+
+    const API_ROUTE = 'http://localhost:8080/api/productos/'
+
+    window.onload = () => {
+
+        /* Captura de elementos */
+
+        const buttonSend = document.getElementById("sendButton");
+        const sender = document.getElementById("email");
+        const message = document.getElementById("msg");
+        const listMessages = document.getElementById("listMessages");
+        const productForm = document.getElementById("productForm");
+
+        /* Eventos */
+
+        productForm.addEventListener('submit', async(e) => {
+            e.preventDefault();
+            const title = document.getElementsByName("title").item(0).value;
+            const price = document.getElementsByName("price").item(0).value;
+            const thumbnail = document.getElementsByName("thumbnail").item(0).value;
+            const product = {title, price, thumbnail};
+            title.value = "";
+            price.value = "";
+            thumbnail.value = "";
+            await postProducts(product);
+
+            socket.emit("product");
+        })
+
+        buttonSend.addEventListener('click', (e) => {
+            e.preventDefault();
+            if(sender.value == ''){
+                sender.classList.add("is-invalid");
+            } else {
+                socket.emit("sendMessage",{
+                    sender : sender.value,
+                    message : message.value,
+                });
+                sender.value = '';
+                message.value = '';
+            }
+        });
+
+        sender.addEventListener('change', () => {
+            sender.classList.remove('is-invalid');
+        })
+
+        /* Socket IO */
+
+        const socket = io();
+
+        socket.on("initial", async(messages) => {
+            await getProducts();
+            listMessages.innerHTML = '';
+            writeMessages(listMessages, messages);
+        });
+
+        socket.on("shareMessages", (data) => {
+            listMessages.innerHTML = '';
+            writeMessages(listMessages, data);
+        });
+
+        socket.on("refreshProducts", async() => {
+            await getProducts();
+        })
+
+    }
+
+    const getProducts = async() => {
+        const response = await fetch(API_ROUTE);
+        const data = await response.json();
+        const productsList = data.productos;
+        let container = document.getElementById('containerProductList');
+        let buffer = `
+            <div class="container back-grey m-3 p-3">
+                <h1 class="blue m-2">Vista de Productos</h1>
+                    <table class="table table-striped mt-4">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Precio</th>
+                            <th>Foto</th>
+                        </tr>
+        `
+        productsList.forEach( product => {
+            console.log(product.price);
+            buffer += `
+                <tr>
+                    <td>${product.id}</td>
+                    <td>${product.title}</td>
+                    <td>${parseFloat(product.price).toFixed(2)}</td>
+                    <td><img class="images" src="${product.thumbnail}"></td>
+                </tr>
+            `
+        });
+        buffer += `</table>`
+        container.innerHTML = buffer;
+    }
+    const postProducts = async(product) => {
+        const response = await fetch(API_ROUTE, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify(product)
+        });
+        return response;
+    }
+    const writeMessages = (listMessages, messages) => {
+        messages.forEach( message => {
+            listMessages.innerHTML += `
+                <div>
+                    <span class="message_sender">${message.sender}</span><span class="message_timestamp"> [${message.timestamp}]: </span><span class="message_message">${message.message}</span>
+                </div>
+            `
+        });
+    }
+
+</script>

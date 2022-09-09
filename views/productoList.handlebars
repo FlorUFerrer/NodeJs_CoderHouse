@@ -1,0 +1,28 @@
+<div class="container back-grey m-3">
+    <h1 class="blue m-2">Vista de Productos</h1>
+    {{#if productosList}}
+        <table class="table table-striped">
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Foto</th>
+            </tr>
+            {{#each productosList}}
+                <tr>
+                    <td>{{this.id}}</td>
+                    <td>{{this.title}}</td>
+                    <td>$ {{this.price}}</td>
+                    <td><img class="images" src="{{this.thumbnail}}"></td>
+                </tr>
+            {{/each}}
+        </table>
+    {{ else }}
+        <div class="back-yellow m-5">
+            <h2 class="yellow">No se encontraron productos</h2>
+        </div>
+    {{/if}}
+    <a href="/productos/form">
+        <button class="btn btn-primary"><strong>Agregar Producto</strong></button>
+    </a>
+</div>

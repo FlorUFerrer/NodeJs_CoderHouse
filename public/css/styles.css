@@ -1,0 +1,33 @@
+.blue{
+    color: blue;
+}
+
+.back-grey{
+    background-color: #E9ECEF;
+}
+
+.back-yellow{
+    background-color: #FFF3CD;
+}
+
+.yellow{
+    color: #A27933;
+}
+
+.images{
+    max-width: 50px;
+    max-height: 50px;
+}
+
+.message_sender {
+    font-weight: bold;
+    color: blue;
+}
+
+.message_timestamp {
+    color: #A27933;
+}
+
+.message_message {
+    color: green;
+}
